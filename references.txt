@@ -1,0 +1,110 @@
+KnockoutJS tutorials
+http://learn.knockoutjs.com/
+
+Google Maps API documentation
+https://developers.google.com/maps/documentation/javascript/
+
+Google Maps API picker
+https://developers.google.com/maps/documentation/api-picker
+
+Veg Guide API documentation
+http://www.vegguide.org/site/api-docs
+
+geocoding
+https://developers.google.com/maps/documentation/javascript/geocoding
+
+geocoding api
+http://geocoder.opencagedata.com/
+
+
+geolocation
+https://developers.google.com/maps/articles/geolocation
+
+Knockout & Google Maps Example
+http://www.codeproject.com/Articles/387626/BikeInCity-2-KnockoutJS-JQuery-Google-Maps
+
+Custom Bindings for Google Maps
+http://hoonzis.blogspot.ca/2012/03/knockoutjs-and-google-maps-binding.html
+
+Knockout & Google Map fiddle
+http://jsfiddle.net/paulwilliams0/t9wcC/
+
+
+
+
+
+
+// Array Remove - By John Resig (MIT Licensed) from: http://ejohn.org/blog/javascript-array-remove/
+Array.prototype.remove = function(from, to) {
+  var rest = this.slice((to || from) + 1 || this.length);
+  this.length = from < 0 ? this.length + from : from;
+  return this.push.apply(this, rest);
+};
+	/// temp attempt
+		self.getLocation = ko.computed(function() {
+		geocoder = new google.maps.Geocoder();
+		geocoder.geocode( {address: self.location()}, function(results,status) {
+			//check if geocoding user location was succesful
+			if (status == google.maps.GeocoderStatus.OK) {
+				var loc = results[0].geometry.location;
+				self.locationError(false);
+				//center map and display marker
+				map.setCenter(loc);
+				youAreHere.setPosition(loc);
+				//retrieve results from VegGuide
+				var apiQuery = "http://www.vegguide.org/search/by-lat-long/" + loc.k + "," + loc.D;
+				$.getJSON(apiQuery, function(data) {
+					temp = data.entries;
+					for(var i=0, l=temp.length; i<l;i++) {
+						var c = temp[i];
+						//attempt to geocode and place markers based on existing address data
+						address =	(c.address1 ? c.address1 : "") 
+												+ (c.city ? ", " + c.city: "")
+												+ (c.country ? ", " + c.country : "") 
+												+ (c.postal_code ? ", " + c.postal_code : "");
+						console.log("address: " + address);
+						geoQuery = "https://api.opencagedata.com/geocode/v1/google-v3-json?address=" + address + "&key=7a13e1e483d6ea1edbddba38eaa2caca&pretty=1";
+						$.getJSON(geoQuery, function(geoData) {
+							/*
+							xx   need to seperate these json calls
+									or just remove the bad results from temp??
+									scope issue  - should maybe just move this geocoding into seperate function again
+									pass the address and name for title
+									store in temp array and remove items somehow
+							*/
+							if(geoData.status == "OK") {
+								//if location was found, add a marker
+								if(geoData.results.length > 0)
+								{
+									console.log("temp: " + temp);
+									console.log(geoData.results[0].geometry.location);
+									var markerLocation = new google.maps.LatLng(geoData.results[0].geometry.location.lat, geoData.results[0].geometry.location.lng);
+									console.log(markerLocation);
+									var marker = new google.maps.Marker({
+										position: markerLocation,
+										map: map,
+										title: address
+									});
+								}
+								else {
+									//location could not be found
+									temp.remove(i);
+								}
+							}
+							else {
+								//geocode failed
+								temp.remove(i);
+							}
+						});
+					self.results(temp);
+					}
+				});
+				return loc;
+			}
+			else {
+				//could not find location based on search
+				self.locationError(true);
+				return startLoc;
+			}
+		});
+	});
