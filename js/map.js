@@ -127,6 +127,8 @@ function MapViewModel() {
 				youAreHere.setPosition(loc);
 				//clear results and markers
 				self.results.removeAll();
+				//xx change to forEach
+				//http://stackoverflow.com/questions/9351939/using-ko-utils-arrayforeach-to-iterate-over-a-observablearray
 				for(var m=0, l=self.markers().length;m<l;m++) {
 					self.markers()[m].setMap(null);
 				} 
@@ -134,13 +136,9 @@ function MapViewModel() {
 				//retrieve results from VegGuide
 				var apiQuery = "http://www.vegguide.org/search/by-lat-long/" + loc.lat() + "," + loc.lng();
 				$.getJSON(apiQuery, function(data) {
-			//		self.results(data.entries);
-					temp = data.entries;
-					for(var i=0, l=data.entry_count; i<l;i++) {
-						var c = temp[i];
-						(function(c) { //allow AJAX calls to access proper 'c'
+					data.entries.forEach(function(c) {
 							markAddress(c);
-						})(c);
+					});
 				}
 				//xx just see what this spits out
 				console.log("marker: ");

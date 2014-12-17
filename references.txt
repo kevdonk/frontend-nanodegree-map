@@ -38,8 +38,14 @@ http://stackoverflow.com/questions/2031085/how-can-i-check-if-string-contains-ch
 Remove markers
 https://developers.google.com/maps/documentation/javascript/examples/marker-remove
 
+Knockout foreach
+http://stackoverflow.com/questions/9351939/using-ko-utils-arrayforeach-to-iterate-over-a-observablearray
+
 Device widths for responsive design
 http://mydevice.io/devices/
+
+Dawoon Choi - HipChat Discussion
+on efficiency of forEach
 
 
 // Array Remove - By John Resig (MIT Licensed) from: http://ejohn.org/blog/javascript-array-remove/
