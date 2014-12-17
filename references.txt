@@ -29,6 +29,9 @@ http://hoonzis.blogspot.ca/2012/03/knockoutjs-and-google-maps-binding.html
 Knockout & Google Map fiddle
 http://jsfiddle.net/paulwilliams0/t9wcC/
 
+JSON inside loop
+http://stackoverflow.com/questions/10287594/getjson-calls-misbehaving-inside-a-for-loop
+
 
 
 
