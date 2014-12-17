@@ -14,8 +14,8 @@ geocoding
 https://developers.google.com/maps/documentation/javascript/geocoding
 
 geocoding api
-http://geocoder.opencagedata.com/
-
+http://geocoder.opencagedata.com/     --- not working well
+http://www.mapquestapi.com/geocoding/   -- perhaps
 
 geolocation
 https://developers.google.com/maps/articles/geolocation
@@ -32,9 +32,14 @@ http://jsfiddle.net/paulwilliams0/t9wcC/
 JSON inside loop
 http://stackoverflow.com/questions/10287594/getjson-calls-misbehaving-inside-a-for-loop
 
+Whitespace test
+http://stackoverflow.com/questions/2031085/how-can-i-check-if-string-contains-characters-whitespace-not-just-whitespace
 
+Remove markers
+https://developers.google.com/maps/documentation/javascript/examples/marker-remove
 
-
+Device widths for responsive design
+http://mydevice.io/devices/
 
 
 // Array Remove - By John Resig (MIT Licensed) from: http://ejohn.org/blog/javascript-array-remove/

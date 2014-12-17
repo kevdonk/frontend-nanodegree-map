@@ -71,9 +71,10 @@ li {
 	border-radius: 8px;
 	padding: 5px;
 	position: fixed;
+	left: 50%;
 	bottom: 0;
-	left: 43%;
-	margin: 0 auto;
+	width: 170px;
+	margin-left: -85px;
 	z-index: 1100;
 }
 #result-search {
@@ -86,7 +87,7 @@ li {
 }
 #info-window {
 	background-color: #fff;
-	width: 350px;
+	width: 100%;
 	max-height: 100%;
 	position: fixed;
 	top: 0;
@@ -104,3 +105,28 @@ li {
 }
 
 
+@media (min-width: 401px) {
+	#info-window {
+		background-color: #fff;
+		width: 350px;
+		max-height: 100%;
+		position: fixed;
+		top: 0;
+		right: 0;
+		z-index: 1000;
+	}
+	.venue {
+		padding: 5px;
+		border-bottom: 1px solid #DDDDDD;
+		height: auto;
+	}
+	.venueLeft {
+		display: inline-block;
+		width: 210px;
+	}
+	.venueRight {
+		display: inline-block;
+		float: right;
+		width: 100px;
+	}
+}

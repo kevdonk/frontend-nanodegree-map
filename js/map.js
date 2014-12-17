@@ -55,10 +55,53 @@ function handleNoGeo(errorFlag) {
 	map.setCenter({lat: 53.5485, lng: -113.519499});
 }
 
+function markAddress(venue) {
+	//from http://stackoverflow.com/questions/2031085/how-can-i-check-if-string-contains-characters-whitespace-not-just-whitespace
+	if (/\S/.test(venue.address1) && venue.address1 != undefined) {    //venue has defined, non-whitespace address
+		address =	(venue.address1)
+						+ (venue.city ? ", " + venue.city: "")
+						+ (venue.country ? ", " + venue.country : "") 
+						+ (venue.postal_code ? ", " + venue.postal_code : "");
+		//xx change to mapquest - consider batching
+		geoQuery = "https://api.opencagedata.com/geocode/v1/google-v3-json?address=" + address + "&key=7a13e1e483d6ea1edbddba38eaa2caca&pretty=1";
+		console.log(venue.name);
+		console.log(address);
+		(function(address) {
+			$.getJSON(geoQuery, function(geoData) {
+				if(geoData.status == "OK") {
+					//if location was found, add a marker
+					if(geoData.results.length > 0)
+					{
+						console.log(venue.name);
+						console.log(address);
+						console.log(geoData.results[0].geometry.location);
+						var markerLocation = new google.maps.LatLng(geoData.results[0].geometry.location.lat, geoData.results[0].geometry.location.lng);
+						self.markers.push(new google.maps.Marker({
+							position: markerLocation,
+							map: map,
+							title: venue.name
+							//xx icons
+						}));
+						self.results.push(venue);
+					}
+					else {
+						//location could not be found
+						console.log("location not found: " + venue);
+					}
+				}
+				else {
+					//geocode failed
+					console.log("geocode failed: " + venue);
+				}
+			});
+		})(address);
+	}
+}
+
+
 function MapViewModel() {
 	initMap(); 
 	var temp = []; 		//temporarily store JSON results
-	var tempMarkers = [];
 	self = this;
 	self.location = ko.observable();
 	self.locationError = ko.observable(false);
@@ -82,7 +125,12 @@ function MapViewModel() {
 				//center map and display marker
 				map.setCenter(loc);
 				youAreHere.setPosition(loc);
-				var wait = $({});	//jquery object to create queue for api calls
+				//clear results and markers
+				self.results.removeAll();
+				for(var m=0, l=self.markers().length;m<l;m++) {
+					self.markers()[m].setMap(null);
+				} 
+				self.markers.removeAll();
 				//retrieve results from VegGuide
 				var apiQuery = "http://www.vegguide.org/search/by-lat-long/" + loc.lat() + "," + loc.lng();
 				$.getJSON(apiQuery, function(data) {
@@ -90,48 +138,13 @@ function MapViewModel() {
 					temp = data.entries;
 					for(var i=0, l=data.entry_count; i<l;i++) {
 						var c = temp[i];
-						(function(c) { //allow AJAX calls to access proper 'i'
-							wait.queue('geoqueue', function(next) {
-							//attempt to geocode and place markers based on existing address data
-								address =	(c.address1 ? c.address1 : "") 
-														+ (c.city ? ", " + c.city: "")
-														+ (c.country ? ", " + c.country : "") 
-														+ (c.postal_code ? ", " + c.postal_code : "");
-								geoQuery = "https://api.opencagedata.com/geocode/v1/google-v3-json?address=" + address + "&key=7a13e1e483d6ea1edbddba38eaa2caca&pretty=1";
-								console.log(address);
-								$.getJSON(geoQuery, function(geoData) {
-									if(geoData.status == "OK") {
-										//if location was found, add a marker
-										if(geoData.results.length > 0)
-										{
-											console.log(c.name);
-											console.log(geoData.results[0].geometry.location);
-											var markerLocation = new google.maps.LatLng(geoData.results[0].geometry.location.lat, geoData.results[0].geometry.location.lng);
-											tempMarkers[i] = new google.maps.Marker({
-												position: markerLocation,
-												map: map,
-												title: c.name
-											});
-											self.results.push(c);
-											//self.markers.push(marker);
-										}
-										else {
-											//location could not be found
-											console.log("location not found, removing: " + c);
-											//self.results.remove(c);
-										}
-									}
-									else {
-										//geocode failed
-										console.log("geocode failed, removing: " + c);
-										//self.results.remove(c);
-									}
-									next();
-								});
-							});
+						(function(c) { //allow AJAX calls to access proper 'c'
+							markAddress(c);
 						})(c);
 				}
-				wait.dequeue('geoqueue');
+				//xx just see what this spits out
+				console.log("marker: ");
+				console.log(self.markers()[0]);
 				return loc;
 			});
 			}
@@ -153,13 +166,12 @@ https://developers.google.com/maps/documentation/timezone/
 
 	functionality:
 	show vegan/veggie (toggle by veg_level) restaurants by location
-		show hours - toggle by open now
+		show hours - toggle by open now?
 		handle errors
 		markers based on level
 		donk marker for 'you are here'
 	provide useful info:
-		directions - google maps app on phones, perhaps seperate div for desktop 
-					draggable starting location ?
+		directions?
 		price range, hours
 
 sidebar
@@ -183,10 +195,8 @@ sidebar
 		easy to toggle visibility
 	additional functionality when list view is clicked
 		perhaps a 'popup' with more detailed info / images etc.
-	if you click on an entry, it slides to the top, shows more info
+	if you click on an entry, it slides open and shows more info
 	and gives directions?
-	can click to go back
-
 
 		veg guide api
 		http://www.vegguide.org/site/api-docs
