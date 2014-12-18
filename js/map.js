@@ -38,8 +38,8 @@ function initMap() {
   youAreHere = new google.maps.Marker({
   	map: map,
   	title: 'You are here',
-  	position: startLoc
-  	//xx add icon (donk?)
+  	position: startLoc,
+  	icon: 'img/lisa.png'
   });
 }
 
@@ -62,13 +62,31 @@ function markAddress(venue) {
 						+ (venue.city ? ", " + venue.city : "")
 						+ (venue.region ? ", " + venue.region : "")
 						+ (venue.postal_code ? ", " + venue.postal_code : "");
+		var color;
+		switch(venue.veg_level) {
+			case "1":
+				color = "007f00";
+				break;
+			case "2":
+				color = "009900";
+				break;			
+			case "3":
+				color = "00b200";
+				break;
+			case "4":
+				color = "00cc00";
+				break;							
+			case "5":
+				color = "00e500";
+				break;
+			default:
+			  color = "ff0000";
+			  break;			
+		}
 
-		//xx change to mapquest - consider batching
+	  iconImg = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + venue.veg_level + "|" + color + "|000000";
 		geoQuery = "http://www.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluurn1ut2u%2Cax%3Do5-9wy5g0&location=" + address;
-		//geoQuery = "https://api.opencagedata.com/geocode/v1/google-v3-json?address=" + address + "&key=7a13e1e483d6ea1edbddba38eaa2caca&pretty=1";
-		console.log(venue.name);
-		console.log(address);
-		(function(address) {
+		(function(address, iconImg) {
 			$.getJSON(geoQuery, function(geoData) {
 				console.log(geoData);
 				if(geoData.info.statuscode == 0) {
@@ -79,8 +97,8 @@ function markAddress(venue) {
 						self.markers.push(new google.maps.Marker({
 							position: markerLocation,
 							map: map,
-							title: venue.name
-							//xx icons
+							title: venue.name,
+							icon: iconImg  
 						}));
 						self.results.push(venue);
 					}
@@ -94,7 +112,7 @@ function markAddress(venue) {
 					console.log("geocode failed: " + venue);
 				}
 			});
-		})(address);
+		})(address, iconImg);
 	}
 }
 
@@ -107,6 +125,9 @@ function MapViewModel() {
 	self.locationError = ko.observable(false);
 	self.results = ko.observableArray();
 	self.markers = ko.observableArray();
+	self.filteredResults = ko.computed(function() {
+
+	});
 	self.resultsVisible = ko.observable(true);
 	self.resultsToggle = ko.computed(function() {
 		return self.resultsVisible() ? "-" : "+"; 
@@ -129,9 +150,12 @@ function MapViewModel() {
 				self.results.removeAll();
 				//xx change to forEach ?
 				//http://stackoverflow.com/questions/9351939/using-ko-utils-arrayforeach-to-iterate-over-a-observablearray
-				for(var m=0, l=self.markers().length;m<l;m++) {
+				ko.utils.arrayForEach(self.markers(), function(m) {
+					m.setMap(null);
+				});
+				/*for(var m=0, l=self.markers().length;m<l;m++) {
 					self.markers()[m].setMap(null);
-				} 
+				} */
 				self.markers.removeAll();
 				//retrieve results from VegGuide
 				var apiQuery = "http://www.vegguide.org/search/by-lat-long/" + loc.lat() + "," + loc.lng();

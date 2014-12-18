@@ -45,5 +45,14 @@
         </ul>
       </div>
     </div>
+    <div data-bind="visible: results().length > 0" id="legend">
+      <img src="img/lisa.png"> Lisa<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=5|00e500|000000"> Vegan<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=4|00cc00|000000"> Vegetarian<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=3|00b200|000000"> Vegetarian (Not Vegan-Friendly)<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=2|009900|000000"> Vegan-Friendly<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=1|007f00|000000"> Vegetarian-Friendly<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=0|ff0000|000000"> Not Veg-Friendly<br>
+    </div>
   </body>
  </html>
