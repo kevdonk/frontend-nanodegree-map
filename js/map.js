@@ -43,8 +43,6 @@ function initMap() {
   });
 }
 
-//xx handle geoloc failure better
-//xx perhaps ask for permission
 function handleNoGeo(errorFlag) {
 	if(errorFlag == true) {
 		console.log("browser supports geoloc, but failed");
@@ -54,7 +52,7 @@ function handleNoGeo(errorFlag) {
 	}
 	map.setCenter({lat: 53.5485, lng: -113.519499});
 }
-
+//convert address to lat, lng, place a marker and add to result list
 function markAddress(venue) {
 	//from http://stackoverflow.com/questions/2031085/how-can-i-check-if-string-contains-characters-whitespace-not-just-whitespace
 	if (/\S/.test(venue.address1) && venue.address1 != undefined) {    //venue has defined, non-whitespace address
@@ -86,7 +84,7 @@ function markAddress(venue) {
 
 	  iconImg = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + venue.veg_level + "|" + color + "|000000";
 		geoQuery = "http://www.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluurn1ut2u%2Cax%3Do5-9wy5g0&location=" + address;
-		(function(address, iconImg) {
+		(function(address, iconImg, venue) {
 			$.getJSON(geoQuery, function(geoData) {
 				console.log(geoData);
 				if(geoData.info.statuscode == 0) {
@@ -94,12 +92,12 @@ function markAddress(venue) {
 					if(geoData.results.length > 0)
 					{
 						var markerLocation = new google.maps.LatLng(geoData.results[0].locations[0].latLng.lat, geoData.results[0].locations[0].latLng.lng);
-						self.markers.push(new google.maps.Marker({
+						venue.marker = new google.maps.Marker({
 							position: markerLocation,
 							map: map,
 							title: venue.name,
 							icon: iconImg  
-						}));
+						});
 						self.results.push(venue);
 					}
 					else {
@@ -112,7 +110,7 @@ function markAddress(venue) {
 					console.log("geocode failed: " + venue);
 				}
 			});
-		})(address, iconImg);
+		})(address, iconImg, venue);
 	}
 }
 
@@ -122,11 +120,33 @@ function MapViewModel() {
 	var temp = []; 		//temporarily store JSON results
 	self = this;
 	self.location = ko.observable();
+	self.filter = ko.observable("");
 	self.locationError = ko.observable(false);
 	self.results = ko.observableArray();
-	self.markers = ko.observableArray();
 	self.filteredResults = ko.computed(function() {
-
+		var filter = self.filter().toLowerCase();
+		console.log(filter);
+		if(!filter) {
+			ko.utils.arrayFilter(self.results(), function(result) {
+				result.marker.setMap(map);
+			})
+			return self.results();
+		} else {
+			return ko.utils.arrayFilter(self.results(), function(result) {
+				result.marker.setMap(map);
+				var checkName = result.name.toLowerCase().indexOf(filter) >= 0;
+				var checkDesc = result.short_description.toLowerCase().indexOf(filter) >= 0;
+			  var checkCuisine = result.cuisines[0].toLowerCase().indexOf(filter) >= 0;
+			  var checkVegLevel = result.veg_level.toLowerCase().indexOf(filter) >= 0;
+			  var checkVegDesc = result.veg_level_description.toLowerCase() == filter;
+			  if (checkName || checkDesc || checkCuisine || checkVegLevel || checkVegDesc) {
+			  	return true;
+			  } else {
+			  	result.marker.setMap(null);
+			  	return false;
+			  }
+			});
+		}
 	});
 	self.resultsVisible = ko.observable(true);
 	self.resultsToggle = ko.computed(function() {
@@ -148,15 +168,9 @@ function MapViewModel() {
 				youAreHere.setPosition(loc);
 				//clear results and markers
 				self.results.removeAll();
-				//xx change to forEach ?
-				//http://stackoverflow.com/questions/9351939/using-ko-utils-arrayforeach-to-iterate-over-a-observablearray
-				ko.utils.arrayForEach(self.markers(), function(m) {
-					m.setMap(null);
+				ko.utils.arrayForEach(self.results(), function(m) {
+					m.marker.setMap(null);
 				});
-				/*for(var m=0, l=self.markers().length;m<l;m++) {
-					self.markers()[m].setMap(null);
-				} */
-				self.markers.removeAll();
 				//retrieve results from VegGuide
 				var apiQuery = "http://www.vegguide.org/search/by-lat-long/" + loc.lat() + "," + loc.lng();
 				$.getJSON(apiQuery, function(data) {
@@ -179,42 +193,14 @@ $(document).ready(function() {
 	ko.applyBindings(new MapViewModel());
 });
 	/*
-https://developers.google.com/maps/documentation/directions/
-https://developers.google.com/maps/documentation/timezone/
+TODO:
+	infowindows with 
+		website
+		address
+		HOURS
+		price rnage?
 
-	functionality:
-	show vegan/veggie (toggle by veg_level) restaurants by location
-		show hours - toggle by open now?
-		handle errors
-		markers based on level
-		donk marker for 'you are here'
-	provide useful info:
-		directions?
-		price range, hours
-
-sidebar
-	website address
-	short description
-	click to reveal
-	hours
-	street address
-
-
-	arrange by distance
-	optimized performance (mobile)
-	navigation? backspace/back browser button should take you back?
-	search bar
-
-	options for walk/bike/drive/public etc ?
-	https://developers.google.com/maps/documentation/javascript/trafficlayer#bicycling_layer
-	
-
-	list view of locations
-		easy to toggle visibility
-	additional functionality when list view is clicked
-		perhaps a 'popup' with more detailed info / images etc.
-	if you click on an entry, it slides open and shows more info
-	and gives directions?
+	gulp build
 
 		veg guide api
 		http://www.vegguide.org/site/api-docs

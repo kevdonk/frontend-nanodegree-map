@@ -22,10 +22,10 @@
         <button data-bind="click: toggleResults" id="info-toggle" type="button">
           <span data-bind="text: resultsToggle"></span>
         </button>
-        <input type="text" placeholder="search by restaurant name, type of cuisine, etc.">
+        <input data-bind="value: filter" type="text" placeholder="search by restaurant name, type of cuisine, etc.">
       </div>
       <div data-bind="visible: resultsVisible" id="result-list">
-        <ul data-bind="foreach: results">
+        <ul data-bind="foreach: filteredResults">
           <li>
             <hr>
             <div class="venue">
