@@ -2,12 +2,14 @@ var geocoder;
 var youAreHere;
 var startLoc;
 var geolocSupport = new Boolean();
+var infowindow;
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
 		zoom: 12,
 		disableDefaultUI: true
 	});
+	infowindow = new google.maps.InfoWindow();
 	//attempt to get current location from: https://developers.google.com/maps/articles/geolocation
 	if(navigator.geolocation) {
 		geolocSupport = true;
@@ -96,6 +98,16 @@ function markAddress(venue) {
 							title: venue.name,
 							icon: iconImg  
 						});
+						venue.content = "<div class='infowindow'><span class='info-title'>" + venue.name + "</span><br>"
+							+ address + "<br>" 
+							+ (venue.website ? "<a target='_new' href='" + venue.website + "'>" +  venue.website + "</a><br>" : "")
+							+"</div>"; 
+						google.maps.event.addListener(venue.marker, 'click', function() {
+							infowindow.setContent(venue.content);
+							infowindow.open(map, this);
+							map.panTo(venue.marker.getPosition());
+						});
+
 						self.results.push(venue);
 					}
 					else {
@@ -152,6 +164,10 @@ function MapViewModel() {
 	self.toggleResults = function() {
 		self.resultsVisible(!self.resultsVisible());
 	};
+	//handle clicking a list item
+	self.listClick = function(listItem) {
+		google.maps.event.trigger(listItem.marker, 'click');
+	};
 	//geocode address from: https://developers.google.com/maps/documentation/javascript/geocoding
 	self.getLocation = ko.computed(function() {
 		geocoder = new google.maps.Geocoder();
@@ -190,58 +206,15 @@ $(document).ready(function() {
 	ko.applyBindings(new MapViewModel());
 });
 	/*
-TODO:
-	infowindows with 
-		website
-		address
-		HOURS
-		price rnage?
+TODO: add hours to infowindow?
+		price range?
 
 	gulp build
 
-		veg guide api
-		http://www.vegguide.org/site/api-docs
-
-		Region
-			name
-			is_country  
-
-			time_zone ?
-			entry_count
-			uri
-			entries_uri
-
-			if they exist
-			parent    //regions
-			children  //regions
-			comments
-
-		Entry
-			name
-			distance
-			sortable_name
-			short_description
-
-			//address info
-			address1
-			address2
-			neighborhood
-			city
-			region
-			postal_code
-			country
-
-			directions
+	entries have:
+	
 			phone
-			website
-			veg_level
-			veg_level_description
-							0 - Not Veg-Friendly     rare
-							1 - Vegetarian-Friendly
-							2 - Vegan-Friendly
-							3 - Vegetarian (But Not Vegan-Friendly) rare
-							4 - Vegetarian
-							5 - Vegan
+
 			price_range
 			hours
 							[
@@ -254,22 +227,7 @@ TODO:
 							        hours => ['closed']
 							    }
 							]
-			is_wheelchar_accessible
-
-			is_cash_only
-			payment_options
-
-			rating_count
-			weighted_rating
-
-			categories  // e.g. bar, general store
-
-			cuisines
 
 			images
-
-			uri
-			reviews_uri
-
 
 	*/

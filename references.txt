@@ -53,6 +53,11 @@ https://developers.google.com/maps/tutorials/customizing/adding-a-legend
 Knockout Utility Functions for filtering
 http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
 
+google maps infowindow
+https://developers.google.com/maps/documentation/javascript/examples/infowindow-simple
+
+one infowindow at a time
+http://stackoverflow.com/questions/1875596/have-just-one-infowindow-open-in-google-maps-api-v3
 
 
 

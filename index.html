@@ -26,7 +26,7 @@
       </div>
       <div data-bind="visible: resultsVisible" id="result-list">
         <ul data-bind="foreach: filteredResults">
-          <li>
+          <li data-bind="click: $parent.listClick">
             <hr>
             <div class="venue">
               <div class="venueLeft">
@@ -36,9 +36,6 @@
               <div class="venueRight">
                 <span data-bind="text: veg_level_description" class="vegLevel"></span><br>
                 <span data-bind="text: cuisines[0]" class="cuisine"></span>
-              </div>
-              <div class="venueExtra">
-
               </div>
             </div>
           </li>
