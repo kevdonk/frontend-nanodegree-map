@@ -180,10 +180,10 @@ function MapViewModel() {
 				map.setCenter(loc);
 				youAreHere.setPosition(loc);
 				//clear results and markers
-				self.results.removeAll();
 				ko.utils.arrayForEach(self.results(), function(m) {
 					m.marker.setMap(null);
 				});
+				self.results.removeAll();
 				//retrieve results from VegGuide
 				var apiQuery = "http://www.vegguide.org/search/by-lat-long/" + loc.lat() + "," + loc.lng();
 				$.getJSON(apiQuery, function(data) {
