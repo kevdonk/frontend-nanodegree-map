@@ -138,7 +138,7 @@ function MapViewModel() {
 		if(!filter) {
 			ko.utils.arrayFilter(self.results(), function(result) {
 				result.marker.setMap(map);
-			})
+			});
 			return self.results();
 		} else {
 			return ko.utils.arrayFilter(self.results(), function(result) {
