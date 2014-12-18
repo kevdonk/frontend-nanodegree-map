@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<title>Lisa's Choice :: Vegan & Vegetarian Food Finder</title>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  	<link rel="stylesheet" type="text/css" href="css/mapstyle.css">
+  	<!-- xx: change these to //  rather than https:// -->
+  	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js"></script>
+  	<script type="text/javascript" src="js/map.js"></script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+    <div id="location-search">
+      <input data-bind="value: location" type="text" placeholder="enter a city">
+      <div data-bind="visible: locationError" class="error">location not found</div>
+    </div>
+    <div data-bind="visible: results().length > 0" id="info-window">
+      <div id="result-search">
+        <button data-bind="click: toggleResults" id="info-toggle" type="button">
+          <span data-bind="text: resultsToggle"></span>
+        </button>
+        <input data-bind="value: filter" type="text" placeholder="search by restaurant name, type of cuisine, etc.">
+      </div>
+      <div data-bind="visible: resultsVisible" id="result-list">
+        <ul data-bind="foreach: filteredResults">
+          <li data-bind="click: $parent.listClick">
+            <hr>
+            <div class="venue">
+              <div class="venueLeft">
+                <span data-bind="text: name" class="venueName"></span>
+                <br><span data-bind="text: short_description" class="description"></span>
+              </div>
+              <div class="venueRight">
+                <span data-bind="text: veg_level_description" class="vegLevel"></span><br>
+                <span data-bind="text: cuisines[0]" class="cuisine"></span>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div data-bind="visible: results().length > 0" id="legend">
+      <img src="img/lisa.png"> Lisa<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=5|00e500|000000"> Vegan<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=4|00cc00|000000"> Vegetarian<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=3|00b200|000000"> Vegetarian (Not Vegan-Friendly)<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=2|009900|000000"> Vegan-Friendly<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=1|007f00|000000"> Vegetarian-Friendly<br>
+      <img src="http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=0|ff0000|000000"> Not Veg-Friendly<br>
+    </div>
+  </body>
+ </html>

@@ -1,0 +1,70 @@
+KnockoutJS tutorials
+http://learn.knockoutjs.com/
+
+Google Maps API documentation
+https://developers.google.com/maps/documentation/javascript/
+
+Google Maps API picker
+https://developers.google.com/maps/documentation/api-picker
+
+Veg Guide API documentation
+http://www.vegguide.org/site/api-docs
+
+geocoding
+https://developers.google.com/maps/documentation/javascript/geocoding
+
+geocoding api
+http://geocoder.opencagedata.com/     --- not working well
+http://www.mapquestapi.com/geocoding/   -- perhaps
+
+geolocation
+https://developers.google.com/maps/articles/geolocation
+
+Knockout & Google Maps Example
+http://www.codeproject.com/Articles/387626/BikeInCity-2-KnockoutJS-JQuery-Google-Maps
+
+Custom Bindings for Google Maps
+http://hoonzis.blogspot.ca/2012/03/knockoutjs-and-google-maps-binding.html
+
+Knockout & Google Map fiddle
+http://jsfiddle.net/paulwilliams0/t9wcC/
+
+JSON inside loop
+http://stackoverflow.com/questions/10287594/getjson-calls-misbehaving-inside-a-for-loop
+
+Whitespace test
+http://stackoverflow.com/questions/2031085/how-can-i-check-if-string-contains-characters-whitespace-not-just-whitespace
+
+Remove markers
+https://developers.google.com/maps/documentation/javascript/examples/marker-remove
+
+Knockout foreach
+http://stackoverflow.com/questions/9351939/using-ko-utils-arrayforeach-to-iterate-over-a-observablearray
+
+Device widths for responsive design
+http://mydevice.io/devices/
+
+Dawoon Choi - HipChat Discussion
+on efficiency of forEach
+
+google maps legend
+https://developers.google.com/maps/tutorials/customizing/adding-a-legend
+
+Knockout Utility Functions for filtering
+http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
+
+google maps infowindow
+https://developers.google.com/maps/documentation/javascript/examples/infowindow-simple
+
+one infowindow at a time
+http://stackoverflow.com/questions/1875596/have-just-one-infowindow-open-in-google-maps-api-v3
+
+
+
+// Array Remove - By John Resig (MIT Licensed) from: http://ejohn.org/blog/javascript-array-remove/
+Array.prototype.remove = function(from, to) {
+  var rest = this.slice((to || from) + 1 || this.length);
+  this.length = from < 0 ? this.length + from : from;
+  return this.push.apply(this, rest);
+};
+	
