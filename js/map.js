@@ -59,23 +59,23 @@ function markAddress(venue) {
 	//from http://stackoverflow.com/questions/2031085/how-can-i-check-if-string-contains-characters-whitespace-not-just-whitespace
 	if (/\S/.test(venue.address1) && venue.address1 != undefined) {    //venue has defined, non-whitespace address
 		address =	(venue.address1)
-						+ (venue.city ? ", " + venue.city: "")
-						+ (venue.country ? ", " + venue.country : "") 
+						+ (venue.city ? ", " + venue.city : "")
+						+ (venue.region ? ", " + venue.region : "")
 						+ (venue.postal_code ? ", " + venue.postal_code : "");
+
 		//xx change to mapquest - consider batching
-		geoQuery = "https://api.opencagedata.com/geocode/v1/google-v3-json?address=" + address + "&key=7a13e1e483d6ea1edbddba38eaa2caca&pretty=1";
+		geoQuery = "http://www.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluurn1ut2u%2Cax%3Do5-9wy5g0&location=" + address;
+		//geoQuery = "https://api.opencagedata.com/geocode/v1/google-v3-json?address=" + address + "&key=7a13e1e483d6ea1edbddba38eaa2caca&pretty=1";
 		console.log(venue.name);
 		console.log(address);
 		(function(address) {
 			$.getJSON(geoQuery, function(geoData) {
-				if(geoData.status == "OK") {
+				console.log(geoData);
+				if(geoData.info.statuscode == 0) {
 					//if location was found, add a marker
 					if(geoData.results.length > 0)
 					{
-						console.log(venue.name);
-						console.log(address);
-						console.log(geoData.results[0].geometry.location);
-						var markerLocation = new google.maps.LatLng(geoData.results[0].geometry.location.lat, geoData.results[0].geometry.location.lng);
+						var markerLocation = new google.maps.LatLng(geoData.results[0].locations[0].latLng.lat, geoData.results[0].locations[0].latLng.lng);
 						self.markers.push(new google.maps.Marker({
 							position: markerLocation,
 							map: map,
@@ -127,7 +127,7 @@ function MapViewModel() {
 				youAreHere.setPosition(loc);
 				//clear results and markers
 				self.results.removeAll();
-				//xx change to forEach
+				//xx change to forEach ?
 				//http://stackoverflow.com/questions/9351939/using-ko-utils-arrayforeach-to-iterate-over-a-observablearray
 				for(var m=0, l=self.markers().length;m<l;m++) {
 					self.markers()[m].setMap(null);
@@ -139,12 +139,8 @@ function MapViewModel() {
 					data.entries.forEach(function(c) {
 							markAddress(c);
 					});
-				}
-				//xx just see what this spits out
-				console.log("marker: ");
-				console.log(self.markers()[0]);
+				});
 				return loc;
-			});
 			}
 			else {
 				//could not find location based on search
