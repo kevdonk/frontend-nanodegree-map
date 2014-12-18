@@ -17,7 +17,6 @@ function initMap() {
 			geocoder.geocode({'latLng': startLoc}, function(result, status) {
 				if(status == google.maps.GeocoderStatus.OK) {
 					if(result[1]){						
-						console.log(result[1]);
 						//set location to result of search before comma (e.g. 'Edmonton', AB, Canada)
 						self.location(result[1].formatted_address.substr(0, result[1].formatted_address.indexOf(',')));
 				}
@@ -86,7 +85,6 @@ function markAddress(venue) {
 		geoQuery = "http://www.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluurn1ut2u%2Cax%3Do5-9wy5g0&location=" + address;
 		(function(address, iconImg, venue) {
 			$.getJSON(geoQuery, function(geoData) {
-				console.log(geoData);
 				if(geoData.info.statuscode == 0) {
 					//if location was found, add a marker
 					if(geoData.results.length > 0)
@@ -125,7 +123,6 @@ function MapViewModel() {
 	self.results = ko.observableArray();
 	self.filteredResults = ko.computed(function() {
 		var filter = self.filter().toLowerCase();
-		console.log(filter);
 		if(!filter) {
 			ko.utils.arrayFilter(self.results(), function(result) {
 				result.marker.setMap(map);
@@ -133,18 +130,18 @@ function MapViewModel() {
 			return self.results();
 		} else {
 			return ko.utils.arrayFilter(self.results(), function(result) {
-				result.marker.setMap(map);
-				var checkName = result.name.toLowerCase().indexOf(filter) >= 0;
-				var checkDesc = result.short_description.toLowerCase().indexOf(filter) >= 0;
-			  var checkCuisine = result.cuisines[0].toLowerCase().indexOf(filter) >= 0;
-			  var checkVegLevel = result.veg_level.toLowerCase().indexOf(filter) >= 0;
-			  var checkVegDesc = result.veg_level_description.toLowerCase() == filter;
-			  if (checkName || checkDesc || checkCuisine || checkVegLevel || checkVegDesc) {
-			  	return true;
-			  } else {
-			  	result.marker.setMap(null);
-			  	return false;
-			  }
+					result.marker.setMap(map);
+					var checkName = result.name ? result.name.toLowerCase().indexOf(filter) >= 0 : false;
+					var checkDesc = result.short_description ? result.short_description.toLowerCase().indexOf(filter) >= 0 : false;
+				  var checkCuisine = result.cuisines[0] ? result.cuisines[0].toLowerCase().indexOf(filter) >= 0 : false;
+				  var checkVegLevel = result.veg_level ? result.veg_level.toLowerCase().indexOf(filter) >= 0 : false;
+				  var checkVegDesc = result.veg_level_description ? result.veg_level_description.toLowerCase() == filter : false;
+				  if (checkName || checkDesc || checkCuisine || checkVegLevel || checkVegDesc) {
+				  	return true;
+				  } else {
+				  	result.marker.setMap(null);
+				  	return false;
+				  }
 			});
 		}
 	});
