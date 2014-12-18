@@ -1,0 +1,39 @@
+{
+  "name": "frontend-nanodegree-map",
+  "version": "1.0.0",
+  "description": "frontend-nanodegree-map\r =======================\r Project 5 of the Udacity Frontend Nanodegree\r Dedicated to Lisa, who is more beautiful than her icon lets on, this app attempts to get your location\r and shows the vegan/vegetarian venues in the area",
+  "main": "index.js",
+  "dependencies": {
+    "gulp": "^3.8.10"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.10",
+    "gulp-cssmin": "^0.1.6",
+    "gulp-gh-pages": "^0.4.0",
+    "gulp-htmlmin": "^0.2.0",
+    "gulp-imagemin": "^2.0.0",
+    "gulp-inline-source": "^1.1.0",
+    "gulp-jshint": "^1.9.0",
+    "gulp-uglify": "^1.0.2",
+    "imagemin-pngcrush": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kevdonk/frontend-nanodegree-map"
+  },
+  "keywords": [
+    "vegan",
+    "vegetarian",
+    "food",
+    "finder"
+  ],
+  "author": "Kevin Mayo (kevdonk)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kevdonk/frontend-nanodegree-map/issues"
+  },
+  "homepage": "https://github.com/kevdonk/frontend-nanodegree-map"
+}
