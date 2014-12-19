@@ -98,9 +98,20 @@ function markAddress(venue) {
 							title: venue.name,
 							icon: iconImg  
 						});
+						venue.times = "";
+						if(venue.hours) {
+              venue.hours.forEach(function(o) {
+                venue.times += "<br>" + o.days + ": "
+                o.hours.forEach(function(i) {
+                   venue.times+= i + " ";
+                });
+            	});
+            }
 						venue.content = "<div class='infowindow'><span class='info-title'>" + venue.name + "</span><br>"
 							+ address + "<br>" 
-							+ (venue.website ? "<a target='_new' href='" + venue.website + "'>" +  venue.website + "</a><br>" : "")
+							+ (venue.phone ? venue.phone + "<br>" : "")
+							+ (venue.website ? "<a target='_new' href='" + venue.website + "'>" +  venue.website + "</a>" : "")
+							+ venue.times;
 							+"</div>"; 
 						google.maps.event.addListener(venue.marker, 'click', function() {
 							infowindow.setContent(venue.content);
