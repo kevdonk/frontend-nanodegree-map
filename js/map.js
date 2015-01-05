@@ -1,8 +1,9 @@
 var geocoder;
 var youAreHere;
 var startLoc;
-var geolocSupport = new Boolean();
+var geolocSupport;
 var infowindow;
+
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
