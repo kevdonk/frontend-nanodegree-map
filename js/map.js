@@ -62,6 +62,7 @@ function markAddress(venue) {
   if (/\S/.test(venue.address1) && venue.address1 != undefined) { //venue has defined, non-whitespace address
     address = (venue.address1) + (venue.city ? ", " + venue.city : "") + (venue.region ? ", " + venue.region : "") + (venue.postal_code ? ", " + venue.postal_code : "");
     var color;
+    //choose color of marker based on 'veg_level'
     switch (venue.veg_level) {
       case "1":
         color = "007f00";
@@ -82,8 +83,10 @@ function markAddress(venue) {
         color = "ff0000";
         break;
     }
-
+    //icon displays veg_level and is colored accordingly
     iconImg = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + venue.veg_level + "|" + color + "|000000";
+    //geoQuery using mapquest for superior speed compared to google (google allows only 10/second)
+    //TODO: switch map from Google Maps - currently only using Google Maps since it is required by assignment
     geoQuery = "http://www.mapquestapi.com/geocoding/v1/address?key=Fmjtd%7Cluurn1ut2u%2Cax%3Do5-9wy5g0&location=" + address;
     (function(address, iconImg, venue) {
       $.getJSON(geoQuery, function(geoData) {
@@ -97,6 +100,7 @@ function markAddress(venue) {
               title: venue.name,
               icon: iconImg
             });
+            //if hours are listed, store them to be added to info window
             venue.times = "";
             if (venue.hours) {
               venue.hours.forEach(function(o) {
@@ -106,6 +110,7 @@ function markAddress(venue) {
                 });
               });
             }
+
             venue.content = "<div class='infowindow'><span class='info-title'>" + venue.name + "</span><br>" + address + "<br>" + (venue.phone ? venue.phone + "<br>" : "") + (venue.website ? "<a target='_new' href='" + venue.website + "'>" + venue.website + "</a>" : "") + venue.times; + "</div>";
             google.maps.event.addListener(venue.marker, 'click', function() {
               infowindow.setContent(venue.content);
@@ -161,9 +166,11 @@ function MapViewModel() {
     }
   });
   self.resultsVisible = ko.observable(true);
+  //display - (hide) or + (show) menu based on self.resultsVisible
   self.resultsToggle = ko.computed(function() {
     return self.resultsVisible() ? "-" : "+";
   });
+  //toggle self.resultsVisible (show/hide results list)
   self.toggleResults = function() {
     self.resultsVisible(!self.resultsVisible());
   };
@@ -216,4 +223,4 @@ TODO:
   entries have:
     images
 
-  */
+*/
