@@ -56,6 +56,22 @@ function handleNoGeo(errorFlag) {
     lng: -113.519499
   });
 }
+//create html content for info windows that appear above markers when list items/markers are clicked
+function getContent(venue, address) {
+  //if hours are listed, store them to be added to info window
+  venue.times = "";
+  if (venue.hours) {
+    venue.hours.forEach(function(o) {
+      venue.times += "<br>" + o.days + ": "
+      o.hours.forEach(function(i) {
+        venue.times += i + " ";
+      });
+    });
+  }
+  //content is a div filled with available info - ternary operators filter out non-existant data
+  return "<div class='infowindow'><span class='info-title'>" + venue.name + "</span><br>" + address + "<br>" + (venue.phone ? venue.phone + "<br>" : "") + (venue.website ? "<a target='_new' href='" + venue.website + "'>" + venue.website + "</a>" : "") + venue.times; + "</div>";
+}
+
 //convert address to lat, lng, place a marker and add to result list
 function markAddress(venue) {
   //from http://stackoverflow.com/questions/2031085/how-can-i-check-if-string-contains-characters-whitespace-not-just-whitespace
@@ -100,24 +116,15 @@ function markAddress(venue) {
               title: venue.name,
               icon: iconImg
             });
-            //if hours are listed, store them to be added to info window
-            venue.times = "";
-            if (venue.hours) {
-              venue.hours.forEach(function(o) {
-                venue.times += "<br>" + o.days + ": "
-                o.hours.forEach(function(i) {
-                  venue.times += i + " ";
-                });
-              });
-            }
-
-            venue.content = "<div class='infowindow'><span class='info-title'>" + venue.name + "</span><br>" + address + "<br>" + (venue.phone ? venue.phone + "<br>" : "") + (venue.website ? "<a target='_new' href='" + venue.website + "'>" + venue.website + "</a>" : "") + venue.times; + "</div>";
+            //fill content with html describing venue
+            venue.content = getContent(venue, address);
+            //listen for clicks on marker
             google.maps.event.addListener(venue.marker, 'click', function() {
               infowindow.setContent(venue.content);
               infowindow.open(map, this);
               map.panTo(venue.marker.getPosition());
             });
-
+            //add venue to results list
             self.results.push(venue);
           } else {
             //location could not be found
@@ -150,7 +157,8 @@ function MapViewModel() {
       return self.results();
     } else {
       return ko.utils.arrayFilter(self.results(), function(result) {
-        result.marker.setMap(map);
+        //display markers that match query in any field
+        result.marker.setMap(map); 
         var checkName = result.name ? result.name.toLowerCase().indexOf(filter) >= 0 : false;
         var checkDesc = result.short_description ? result.short_description.toLowerCase().indexOf(filter) >= 0 : false;
         var checkCuisine = result.cuisines[0] ? result.cuisines[0].toLowerCase().indexOf(filter) >= 0 : false;
