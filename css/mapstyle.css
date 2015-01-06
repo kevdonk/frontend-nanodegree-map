@@ -64,6 +64,11 @@ li {
 	color: #ff2222;
 	text-align: center;
 }
+.resultError {
+	width: 100%;
+	text-align: center;
+	color: #ff2222;
+}
 .infowindow {
 	height: 200px;
 	width: 200px;
@@ -84,7 +89,6 @@ li {
 	left: 5px;
 	bottom: 5px;
 	z-index: 1001;
-	display: none;
 }
 #location-search {
 	background-color: #fff;
@@ -124,7 +128,6 @@ li {
 	font-weight: 1000;
 	flex-shrink: 0	;
 }
-
 
 @media (min-width: 401px) {
 	#info-window {

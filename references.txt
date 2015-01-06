@@ -59,8 +59,6 @@ https://developers.google.com/maps/documentation/javascript/examples/infowindow-
 one infowindow at a time
 http://stackoverflow.com/questions/1875596/have-just-one-infowindow-open-in-google-maps-api-v3
 
-
-
 // Array Remove - By John Resig (MIT Licensed) from: http://ejohn.org/blog/javascript-array-remove/
 Array.prototype.remove = function(from, to) {
   var rest = this.slice((to || from) + 1 || this.length);

@@ -5,44 +5,43 @@ var geolocSupport;
 var infowindow;
 
 function initMap() {
-  map = new google.maps.Map(document.getElementById('map-canvas'), {
-    zoom: 12,
-    disableDefaultUI: true
-  });
-  infowindow = new google.maps.InfoWindow();
-  //attempt to get current location from: https://developers.google.com/maps/articles/geolocation
-  if (navigator.geolocation) {
-    geolocSupport = true;
-    navigator.geolocation.getCurrentPosition(function(position) {
-      startLoc = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      //use reverse geocoding to get address
-      geocoder.geocode({
-        'latLng': startLoc
-      }, function(result, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-          if (result[1]) {
-            //set location to result of search before comma (e.g. 'Edmonton', AB, Canada)
-            self.location(result[1].formatted_address.substr(0, result[1].formatted_address.indexOf(',')));
-          }
-        }
-      });
-      map.setCenter(startLoc);
-    }, function() {
-      handleNoGeo(geolocSupport);
+    map = new google.maps.Map(document.getElementById('map-canvas'), {
+      zoom: 12,
+      disableDefaultUI: true
     });
-  } else {
-    geolocSupport = false;
-    handleNoGeo(geolocSupport);
-  }
-  //add location search bar to controls
-  var locationBar = document.getElementById('location-search');
-  //  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationBar);
-  youAreHere = new google.maps.Marker({
-    map: map,
-    title: 'You are here',
-    position: startLoc,
-    icon: 'img/lisa.png'
-  });
+    infowindow = new google.maps.InfoWindow();
+    //attempt to get current location from: https://developers.google.com/maps/articles/geolocation
+    if (navigator.geolocation) {
+      geolocSupport = true;
+      navigator.geolocation.getCurrentPosition(function(position) {
+        startLoc = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        //use reverse geocoding to get address
+        geocoder.geocode({
+          'latLng': startLoc
+        }, function(result, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            if (result[1]) {
+              //set location to result of search before comma (e.g. 'Edmonton', AB, Canada)
+              self.location(result[1].formatted_address.substr(0, result[1].formatted_address.indexOf(',')));
+            }
+          }
+        });
+        map.setCenter(startLoc);
+      }, function() {
+        handleNoGeo(geolocSupport);
+      });
+    } else {
+      geolocSupport = false;
+      handleNoGeo(geolocSupport);
+    }
+    //add location search bar to controls
+    var locationBar = document.getElementById('location-search');
+    youAreHere = new google.maps.Marker({
+      map: map,
+      title: 'You are here',
+      position: startLoc,
+      icon: 'img/lisa.png'
+    });
 }
 
 function handleNoGeo(errorFlag) {
@@ -134,7 +133,7 @@ function markAddress(venue) {
           //geocode failed
           console.log("geocode failed: " + venue);
         }
-      });
+      })
     })(address, iconImg, venue);
   }
 }
